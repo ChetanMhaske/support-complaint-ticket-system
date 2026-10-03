@@ -1,0 +1,238 @@
+{
+  "info": {
+    "_postman_id": "9d8e7b6a-5432-4110-8b01-ticket-system-api",
+    "name": "Support & Complaint Ticket System API",
+    "description": "Postman Collection for Leaplooms Technologies Support / Complaint Ticket System with controlled status workflow (Open -> In Progress -> Resolved).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        },
+        "description": "Returns backend service and database health status."
+      },
+      "response": []
+    },
+    {
+      "name": "1. Create Ticket (Success - defaults to Open)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Payment gateway timeout on checkout\",\n  \"category\": \"Billing & Payments\",\n  \"description\": \"Customers report intermittent timeout errors when completing orders using Visa credit cards.\",\n  \"priority\": \"High\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets"]
+        },
+        "description": "Creates a new ticket. Status defaults to 'Open'."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Create Ticket (Validation Failure Example)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"\",\n  \"category\": \"Technical Issue\",\n  \"description\": \"Missing title and invalid priority\",\n  \"priority\": \"SuperCritical\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets"]
+        },
+        "description": "Demonstrates backend rejection of invalid priority and empty title with 400 Bad Request."
+      },
+      "response": []
+    },
+    {
+      "name": "3. List All Tickets",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets"]
+        },
+        "description": "Lists all tickets ordered by newest first."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Filter Tickets by Status (e.g. Open)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets?status=Open",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets"],
+          "query": [
+            {
+              "key": "status",
+              "value": "Open"
+            }
+          ]
+        },
+        "description": "Filters tickets where status is Open."
+      },
+      "response": []
+    },
+    {
+      "name": "5. Filter Tickets by Priority (e.g. High)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets?priority=High",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets"],
+          "query": [
+            {
+              "key": "priority",
+              "value": "High"
+            }
+          ]
+        },
+        "description": "Filters tickets with High priority."
+      },
+      "response": []
+    },
+    {
+      "name": "6. Filter by Status & Priority combined",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets?status=In%20Progress&priority=High",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets"],
+          "query": [
+            {
+              "key": "status",
+              "value": "In Progress"
+            },
+            {
+              "key": "priority",
+              "value": "High"
+            }
+          ]
+        },
+        "description": "Filters tickets that are currently 'In Progress' and have 'High' priority."
+      },
+      "response": []
+    },
+    {
+      "name": "7. View Ticket Details by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets", "1"]
+        },
+        "description": "Retrieves complete ticket metadata and allowed next transitions for ticket #1."
+      },
+      "response": []
+    },
+    {
+      "name": "8. Update Status: Open -> In Progress",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"In Progress\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets/1/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets", "1", "status"]
+        },
+        "description": "Transitions ticket status from Open to In Progress."
+      },
+      "response": []
+    },
+    {
+      "name": "9. Update Status: In Progress -> Resolved (Stretch Goal: Resolution Note)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Resolved\",\n  \"resolution_note\": \"Identified upstream gateway timeout; restarted payment service and verified end-to-end transaction completion.\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets/1/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets", "1", "status"]
+        },
+        "description": "Transitions status from In Progress to Resolved and attaches resolution note."
+      },
+      "response": []
+    },
+    {
+      "name": "10. Invalid Transition Attempt (Rejection Demo)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Open\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets/1/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets", "1", "status"]
+        },
+        "description": "Demonstrates rejection of illegal status transition (e.g. attempting to reopen a Resolved ticket or jumping states)."
+      },
+      "response": []
+    }
+  ]
+}

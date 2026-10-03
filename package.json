@@ -1,0 +1,20 @@
+{
+  "name": "week2-support-ticket-system",
+  "version": "1.0.0",
+  "description": "Full Stack Support / Complaint Ticket System - Week 2 Assignment",
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "seed": "cd backend && npm run db:init"
+  },
+  "keywords": [
+    "ticket-system",
+    "react",
+    "tailwind",
+    "express",
+    "postgres"
+  ],
+  "author": "Chetan Mhaske",
+  "license": "ISC"
+}
